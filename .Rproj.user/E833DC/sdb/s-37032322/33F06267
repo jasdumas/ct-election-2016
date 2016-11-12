@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"Connecticut Presidential Election Results 2016\"\noutput: \n  flexdashboard::flex_dashboard:\n    orientation: columns\n    vertical_layout: fill\n---\n\n```{r setup, include=FALSE}\nlibrary(flexdashboard)\n```\n\nColumn \n-----------------------------------------------------------------------\n\n### Chart A\n\n```{r}\n\n```\n\n### Chart B\n\n```{r}\n\n```\n\nColumn \n-----------------------------------------------------------------------\n\n### Chart C\n\n```{r}\n\n```\n\n### Chart D\n\n```{r}\n\n```\n\n",
+    "created" : 1478880179960.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3882056358",
+    "id" : "33F06267",
+    "lastKnownWriteTime" : 1478961946,
+    "last_content_update" : 1478961946402,
+    "path" : "~/Desktop/R-directory/ct-election-2016/ct-election-2016-dashboard.Rmd",
+    "project_path" : "ct-election-2016-dashboard.Rmd",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
