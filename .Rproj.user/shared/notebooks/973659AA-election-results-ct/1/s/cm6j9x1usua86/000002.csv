@@ -1,0 +1,2 @@
+"0","ggplot(ct_results, aes(x = cand_name, y = votes, fill = county)) +"
+"0","  geom_bar(stat = ""identity"")"

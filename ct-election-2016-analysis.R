@@ -1,5 +1,4 @@
 # Connecticut Presidential Election Results 2016
-
 library(readr)
 library(dplyr)
 library(leaflet)
@@ -49,20 +48,20 @@ View(ct_results)
 ggplot(ct_results, aes(x = cand_name, y = votes, fill = county)) +
   geom_bar(stat = "identity")
 
+## -------------------------------- ##
 # CT level county shapefiles for 2015
 tmp2 = tempdir()
-#url2 = "http://www2.census.gov/geo/tiger/GENZ2015/shp/cb_2015_09_county_within_ua_500k.zip"
+#url2 = "http://magic.lib.uconn.edu/magic_2/vector/37800/countyct_37800_0000_2010_s100_census_1_shp.zip"
 url2 = "http://www2.census.gov/geo/tiger/GENZ2015/shp/cb_2015_us_county_500k.zip"
 file <- basename(url2)
 download.file(url2, file)
 unzip(file, exdir = tmp2)
-ct_shp <- readOGR(dsn = tmp2, layer = "cb_2015_09_county_within_ua_500k", encoding = "UTF-8")
+ct_shp <- readOGR(dsn = tmp2,
+                  layer = "cb_2015_us_county_500k", encoding = "UTF-8")
 dim(ct_shp)
-class(ct_shp) # the human data is located at ct_shp@data
-View(ct_shp)
 
 # fix the FIPS number in the shape file for merging
-ct_shp@data$fips <- paste0(ct_shp@data$STATEFP10, ct_shp@data$COUNTYFP10)
+ct_shp@data$fips <- paste0(ct_shp@data$GEOID)
 
 # create a empty df
 ct_econ <- data.frame(matrix(ncol=10, nrow = 0))
@@ -105,43 +104,107 @@ ct_econ$county <- c("Fairfield", "Hartford", "Litchfield", "Middlesex",
 # merge this with the ct_results with the economic data
 ct_join <-  dplyr::full_join(ct_results, ct_econ)
 
+# full join the data set 
+ct_join <- dplyr::full_join(ct_shp@data, ct_join)
+
+# remove rows with NA's - i.e. remove everything except the choosen state
+ct_clean = na.omit(ct_join)
+
 ## let's try a specific candidate
-HRC <- ct_join[ct_join$cand_name == "Hillary Clinton", ]
+#HRC <- ct_join[ct_join$cand_name == "Hillary Clinton", ]
 
 # merge this with the entire shapefile object
-ct_shp2 <- sp::merge(x = ct_shp, y = HRC, by = "fips", all.x = F,
-                     duplicateGeoms=F)
-
+ct_shp2 <- ct_shp
+ct_shp2 <- sp::merge(x = ct_shp2, y = ct_clean, 
+                     by = "fips", all.x = F, 
+                     duplicateGeoms=TRUE)
+plot(ct_shp2)
 ## ------------------------------ ##
 ## let's get mapping with leaflet ##
 
+# create seperate color patterns for each candidate for layers
+HRC <- ct_results[which(ct_results$cand_name == "Hillary Clinton"),] 
+DT <- ct_results[which(ct_results$cand_name == "Donald Trump"),]
+GJ <- ct_results[which(ct_results$cand_name == "Gary Johnson"),]
+JT <- ct_results[which(ct_results$cand_name == "Jill Stein"),]
 
-pal <- colorBin(palette = "BuPu", domain = ct_shp2$votes, bins = 8)
+pal1 <- colorBin(palette = "Blues", domain = HRC$votes, bins = 8)
+pal2 <- colorBin(palette = "Reds", domain = DT$votes, bins = 8)
+pal3 <- colorBin(palette = "YlOrRd", domain = GJ$votes, bins = 8)
+pal4 <- colorBin(palette = "Greens", domain = JT$votes, bins = 8)
 
-# pop values
+# pop values statewide regardless of candidate
 state_popup <- paste0("<strong>County: </strong>", 
                       ct_shp2$county, 
+                      "<br><strong>Total Amount of 2016 Voters: </strong>", 
+                      ct_shp2$total,
                       "<br><strong>Median Household Income: </strong>", 
                       ct_shp2$med_house_income14, 
                       "<br><strong>Average Female Income: </strong>",
-                      ct_shp2$avg_female_income)
-# plot the map
-leaflet(data = ct_shp2) %>%
+                      ct_shp2$avg_female_income, 
+                      "<br><strong>Wage Equality Index: </strong>", 
+                      ct_shp2$wage_gini, 
+                      "<br><strong>Largest Demographic in Poverty: </strong>", 
+                      ct_shp2$largest_demo_poverty)
+
+# plot the map(s)
+hrc_map <- leaflet(data = ct_shp2) %>%
   addProviderTiles("CartoDB.Positron") %>%
-  addPolygons(fillColor = ~pal(votes), 
+  addPolygons(fillColor = ~pal1(HRC$votes), 
+              fillOpacity = 0.7, 
+              color = "#BDBDC3", 
+              weight = 1, 
+              popup = state_popup) %>%
+  addLegend("bottomright", 
+            pal = pal1, 
+            values = ~HRC$votes,
+            title = "Total Votes for Hillary Clinton: ",
+            opacity = 1)
+print(hrc_map)
+
+dt_map <- leaflet(data = ct_shp2) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addPolygons(fillColor = ~pal2(DT$votes), 
+              fillOpacity = 0.7, 
+              color = "#BDBDC3", 
+              weight = 1, 
+              popup = state_popup) %>%
+  addLegend("bottomright", 
+            pal = pal2, 
+            values = ~DT$votes,
+            title = "Total Votes for Donald Trump: ",
+            opacity = 1) 
+print(dt_map)
+
+
+gj_map <- leaflet(data = ct_shp2) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addPolygons(fillColor = ~pal3(GJ$votes), 
               fillOpacity = 0.7, 
               color = "#BDBDC3", 
               weight = 1, 
               popup = state_popup) %>%
   addLegend("bottomleft", 
-            pal = pal, 
-            values = ~votes,
-            title = "Total Votes",
-            opacity = 1)
+            pal = pal3, 
+            values = ~GJ$votes,
+            title = "Total Votes for Gary Johnson: ",
+            opacity = 1) 
+print(gj_map)
 
 
-
-
+jt_map <- leaflet(data = ct_shp2) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addPolygons(fillColor = ~pal4(JT$votes), 
+              fillOpacity = 0.7, 
+              color = "#BDBDC3", 
+              weight = 1, 
+              popup = state_popup) %>%
+  addLegend("bottomleft", 
+            pal = pal4, 
+            values = ~JT$votes,
+            title = "Total Votes for Jill Stein: ",
+            opacity = 1) 
+print(jt_map)
 
 
 
