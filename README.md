@@ -2,9 +2,7 @@
 
 #### Mapping and Visualizing the 2016 Presidential Results in CT with R & Leaflet
 
-![](http://htmlpreview.github.io/?https://raw.githubusercontent.com/jasdumas/ct-election-2016/master/to-do-map.html)
-
-
+<iframe src="http://rpubs.com/jasdumas/to-do-map"></iframe>
 
 ### to-do list
 
