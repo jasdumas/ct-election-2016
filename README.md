@@ -2,6 +2,8 @@
 
 #### Mapping and Visualizing the 2016 Presidential Results in CT with R & Leaflet
 
+<iframe src="http://rpubs.com/jasdumas/to-do-map"></iframe>
+
 ### to-do list
 
 * Find a better shapefile or one that is not so patch for county level
