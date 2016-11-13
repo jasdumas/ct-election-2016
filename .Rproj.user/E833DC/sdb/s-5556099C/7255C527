@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1479045856795.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "7255C527",
+    "lastKnownWriteTime" : 4630966719324618751,
+    "last_content_update" : 1479045856795,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "B26454AE",
+        "caption" : "hrc_shp",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=hrc_shp&cache_key=B26454AE",
+        "displayedObservations" : 8,
+        "environment" : "",
+        "object" : "hrc_shp",
+        "preview" : 0,
+        "totalObservations" : 8,
+        "variables" : 37
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}
