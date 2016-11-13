@@ -2,6 +2,8 @@
 
 ## Published Blog Post: [Mapping and Visualizing the 2016 Presidential Results in CT with R & Leaflet](http://jasdumas.github.io/2016-11-13-election-results-ct/)
 
+![](https://github.com/jasdumas/ct-election-2016/blob/master/hrc-plot.jpeg)
+
 ### to-do list
 
 * :ballot_box_with_check: Find a better shapefile or one that is not so patch for county level
